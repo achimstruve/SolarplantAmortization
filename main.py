@@ -401,6 +401,11 @@ for i, bar in enumerate(bars12):
                  ha='center', va='bottom', fontsize=8, fontweight='bold')
 
 plt.tight_layout()
+
+# Plot speichern
+plt.savefig('balkonkraftwerk_analysis.png', dpi=300, bbox_inches='tight')
+print("Plot gespeichert als 'balkonkraftwerk_analysis.png'")
+
 plt.show()
 
 # Jahreserträge und Amortisation anzeigen

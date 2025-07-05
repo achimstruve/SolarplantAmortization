@@ -60,7 +60,13 @@ Das Programm:
 1. Lädt automatisch Wetterdaten für 2023 aus Brunsbüttel herunter
 2. Simuliert alle PV- und Batteriekombinationen
 3. Erstellt umfassende Visualisierungen
-4. Zeigt detaillierte Wirtschaftlichkeitsanalyse in der Konsole
+4. Speichert die Analyse als `balkonkraftwerk_analysis.png`
+5. Zeigt detaillierte Wirtschaftlichkeitsanalyse in der Konsole
+
+### Beispiel-Ausgabe:
+![Balkonkraftwerk Analyse](balkonkraftwerk_analysis.png)
+
+*Umfassende 4x3 Matrix mit Energieerträgen, Amortisationszeiten und jährlichen Ersparnissen für alle Szenarien*
 
 ## 📈 Analysierte Szenarien
 
@@ -90,6 +96,10 @@ Das Programm:
 2. **Zeile 2**: Kumulative Energieerträge
 3. **Zeile 3**: Amortisationszeiten
 4. **Zeile 4**: Jährliche Ersparnisse
+
+### Generierte Dateien:
+- **`balkonkraftwerk_analysis.png`**: Hochauflösende Visualisierung (300 DPI)
+- Interaktive Anzeige der Plots während der Ausführung
 
 ### Konsolen-Ausgabe:
 - Detaillierte Energieerträge pro Szenario
