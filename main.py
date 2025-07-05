@@ -14,12 +14,14 @@ electricity_price = 0.36
 scenarios = {
     '1.0 kWp': {'peak_power': 1.0, 'linestyle': '--'},
     '2.0 kWp': {'peak_power': 2.0, 'linestyle': '-'},
-    '4.0 kWp': {'peak_power': 4.0, 'linestyle': ':'}
+    '4.0 kWp': {'peak_power': 4.0, 'linestyle': ':'},
+    '8.0 kWp': {'peak_power': 8.0, 'linestyle': '-.'}
 }
 
 battery_scenarios = {
     '2.048 kWh': 2.048,
-    '4.096 kWh': 4.096
+    '4.096 kWh': 4.096,
+    '8.192 kWh': 8.192
 }
 
 def get_system_data(peak_power_kwp):
@@ -106,13 +108,14 @@ for scenario_name, battery_results in results.items():
 
 # Preise für verschiedene Konfigurationen (in €)
 prices = {
-    '1.0 kWp': {'no_storage': 500, 'storage_2kwh': 1100, 'storage_4kwh': 1700},
-    '2.0 kWp': {'no_storage': 700, 'storage_2kwh': 1390, 'storage_4kwh': 1990},
-    '4.0 kWp': {'no_storage': 1100, 'storage_2kwh': 1970, 'storage_4kwh': 2570}  # Extrapoliert
+    '1.0 kWp': {'no_storage': 500, 'storage_2kwh': 1100, 'storage_4kwh': 1700, 'storage_8kwh': 2500},
+    '2.0 kWp': {'no_storage': 700, 'storage_2kwh': 1390, 'storage_4kwh': 1990, 'storage_8kwh': 2990},
+    '4.0 kWp': {'no_storage': 1100, 'storage_2kwh': 1970, 'storage_4kwh': 2570, 'storage_8kwh': 3770},  # Extrapoliert
+    '8.0 kWp': {'no_storage': 1900, 'storage_2kwh': 3130, 'storage_4kwh': 3730, 'storage_8kwh': 4500}   # Extrapoliert
 }
 
-# Plot mit 4x3 Subplots für Haupt-Szenarien + Amortisation + Jährliche Ersparnisse
-fig, ((ax1, ax2, ax3), (ax4, ax5, ax6), (ax7, ax8, ax9), (ax10, ax11, ax12)) = plt.subplots(4, 3, figsize=(20, 20))
+# Plot mit 4x4 Subplots für Haupt-Szenarien + Amortisation + Jährliche Ersparnisse
+fig, ((ax1, ax2, ax3, ax4), (ax5, ax6, ax7, ax8), (ax9, ax10, ax11, ax12), (ax13, ax14, ax15, ax16)) = plt.subplots(4, 4, figsize=(25, 20))
 
 # Farben für die PV-Systeme
 colors = ['C0', 'C1', 'C2']
@@ -135,19 +138,19 @@ ax1.set_ylabel("Energieertrag (kWh/Monat)")
 ax1.grid(True)
 ax1.legend(fontsize=8)
 
-# Subplot 4: Kumulative Erträge ohne Speicher (nur 800W Limit)
+# Subplot 5: Kumulative Erträge ohne Speicher (nur 800W Limit)
 for scenario_name, battery_data in monthly_cum_data.items():
     linestyle = linestyles[scenario_name]
     monthly_cum = battery_data['2.048 kWh']
-    ax4.plot(monthly_cum.index, monthly_cum[f'{scenario_type_no_storage}_cum'], 
+    ax5.plot(monthly_cum.index, monthly_cum[f'{scenario_type_no_storage}_cum'], 
             label=f"{scenario_name} - {scenario_label_no_storage}", 
             linewidth=2, linestyle=linestyle, color=color_no_storage)
 
-ax4.set_title("Kumulative Erträge - Ohne Speicher")
-ax4.set_ylabel("Kumulativer Energieertrag (kWh)")
-ax4.set_xlabel("Monat")
-ax4.grid(True)
-ax4.legend(fontsize=8)
+ax5.set_title("Kumulative Erträge - Ohne Speicher")
+ax5.set_ylabel("Kumulativer Energieertrag (kWh)")
+ax5.set_xlabel("Monat")
+ax5.grid(True)
+ax5.legend(fontsize=8)
 
 # ===== SPALTE 2: 2.048 kWh SPEICHER =====
 # Subplot 2: Monatliche Erträge mit 2.048 kWh Batterie (nur Speicher-Szenario)
@@ -167,19 +170,19 @@ ax2.set_ylabel("Energieertrag (kWh/Monat)")
 ax2.grid(True)
 ax2.legend(fontsize=8)
 
-# Subplot 5: Kumulative Erträge mit 2.048 kWh Batterie (nur Speicher-Szenario)
+# Subplot 6: Kumulative Erträge mit 2.048 kWh Batterie (nur Speicher-Szenario)
 for scenario_name, battery_data in monthly_cum_data.items():
     linestyle = linestyles[scenario_name]
     monthly_cum = battery_data['2.048 kWh']
-    ax5.plot(monthly_cum.index, monthly_cum[f'{scenario_type_storage}_cum'], 
+    ax6.plot(monthly_cum.index, monthly_cum[f'{scenario_type_storage}_cum'], 
             label=f"{scenario_name} - {scenario_label_storage}", 
             linewidth=2, linestyle=linestyle, color=color_storage)
 
-ax5.set_title("Kumulative Erträge - 2.048 kWh Speicher")
-ax5.set_ylabel("Kumulativer Energieertrag (kWh)")
-ax5.set_xlabel("Monat")
-ax5.grid(True)
-ax5.legend(fontsize=8)
+ax6.set_title("Kumulative Erträge - 2.048 kWh Speicher")
+ax6.set_ylabel("Kumulativer Energieertrag (kWh)")
+ax6.set_xlabel("Monat")
+ax6.grid(True)
+ax6.legend(fontsize=8)
 
 # ===== SPALTE 3: 4.096 kWh SPEICHER =====
 # Subplot 3: Monatliche Erträge mit 4.096 kWh Batterie (nur Speicher-Szenario)
@@ -195,31 +198,59 @@ ax3.set_ylabel("Energieertrag (kWh/Monat)")
 ax3.grid(True)
 ax3.legend(fontsize=8)
 
-# Subplot 6: Kumulative Erträge mit 4.096 kWh Batterie (nur Speicher-Szenario)
+# Subplot 7: Kumulative Erträge mit 4.096 kWh Batterie (nur Speicher-Szenario)
 for scenario_name, battery_data in monthly_cum_data.items():
     linestyle = linestyles[scenario_name]
     monthly_cum = battery_data['4.096 kWh']
-    ax6.plot(monthly_cum.index, monthly_cum[f'{scenario_type_storage}_cum'], 
+    ax7.plot(monthly_cum.index, monthly_cum[f'{scenario_type_storage}_cum'], 
             label=f"{scenario_name} - {scenario_label_storage}", 
             linewidth=2, linestyle=linestyle, color=color_storage)
 
-ax6.set_title("Kumulative Erträge - 4.096 kWh Speicher")
-ax6.set_ylabel("Kumulativer Energieertrag (kWh)")
-ax6.set_xlabel("Monat")
-ax6.grid(True)
-ax6.legend(fontsize=8)
+ax7.set_title("Kumulative Erträge - 4.096 kWh Speicher")
+ax7.set_ylabel("Kumulativer Energieertrag (kWh)")
+ax7.set_xlabel("Monat")
+ax7.grid(True)
+ax7.legend(fontsize=8)
+
+# ===== SPALTE 4: 8.192 kWh SPEICHER =====
+# Subplot 4: Monatliche Erträge mit 8.192 kWh Batterie (nur Speicher-Szenario)
+for scenario_name, battery_data in monthly_data.items():
+    linestyle = linestyles[scenario_name]
+    monthly = battery_data['8.192 kWh']
+    ax4.plot(monthly.index, monthly[scenario_type_storage], 
+            label=f"{scenario_name} - {scenario_label_storage}", 
+            linewidth=2, linestyle=linestyle, color=color_storage)
+
+ax4.set_title("Monatliche Erträge - 8.192 kWh Speicher")
+ax4.set_ylabel("Energieertrag (kWh/Monat)")
+ax4.grid(True)
+ax4.legend(fontsize=8)
+
+# Subplot 8: Kumulative Erträge mit 8.192 kWh Batterie (nur Speicher-Szenario)
+for scenario_name, battery_data in monthly_cum_data.items():
+    linestyle = linestyles[scenario_name]
+    monthly_cum = battery_data['8.192 kWh']
+    ax8.plot(monthly_cum.index, monthly_cum[f'{scenario_type_storage}_cum'], 
+            label=f"{scenario_name} - {scenario_label_storage}", 
+            linewidth=2, linestyle=linestyle, color=color_storage)
+
+ax8.set_title("Kumulative Erträge - 8.192 kWh Speicher")
+ax8.set_ylabel("Kumulativer Energieertrag (kWh)")
+ax8.set_xlabel("Monat")
+ax8.grid(True)
+ax8.legend(fontsize=8)
 
 # ===== ANNOTATIONS =====
-# Annotations für ohne Speicher (ax4)
+# Annotations für ohne Speicher (ax5)
 annotation_color_no_storage = 'orange'
 annotation_offset_no_storage = 0
-x_offsets = [10, -60, -110]
+x_offsets = [10, -50, -100, -150]  # Erweitert für 4 PV-Systeme
 
 for j, (scenario_name, battery_data) in enumerate(monthly_cum_data.items()):
     monthly_cum = battery_data['2.048 kWh']
     final_value = monthly_cum[f'{scenario_type_no_storage}_cum'].iloc[-1]
     
-    ax4.annotate(f'{final_value:.1f} kWh', 
+    ax5.annotate(f'{final_value:.1f} kWh', 
                  xy=(monthly_cum.index[-1], final_value),
                  xytext=(x_offsets[j], annotation_offset_no_storage), 
                  textcoords='offset points',
@@ -228,7 +259,7 @@ for j, (scenario_name, battery_data) in enumerate(monthly_cum_data.items()):
                           alpha=0.7 - j*0.1),
                  fontsize=7, fontweight='bold')
 
-# Annotations für 2.048 kWh Speicher (ax5)
+# Annotations für 2.048 kWh Speicher (ax6)
 annotation_color_storage = 'lightgreen'
 annotation_offset_storage = 0
 
@@ -236,7 +267,7 @@ for j, (scenario_name, battery_data) in enumerate(monthly_cum_data.items()):
     monthly_cum = battery_data['2.048 kWh']
     final_value = monthly_cum[f'{scenario_type_storage}_cum'].iloc[-1]
     
-    ax5.annotate(f'{final_value:.1f} kWh', 
+    ax6.annotate(f'{final_value:.1f} kWh', 
                  xy=(monthly_cum.index[-1], final_value),
                  xytext=(x_offsets[j], annotation_offset_storage), 
                  textcoords='offset points',
@@ -245,12 +276,26 @@ for j, (scenario_name, battery_data) in enumerate(monthly_cum_data.items()):
                           alpha=0.7 - j*0.1),
                  fontsize=7, fontweight='bold')
 
-# Annotations für 4.096 kWh Speicher (ax6)
+# Annotations für 4.096 kWh Speicher (ax7)
 for j, (scenario_name, battery_data) in enumerate(monthly_cum_data.items()):
     monthly_cum = battery_data['4.096 kWh']
     final_value = monthly_cum[f'{scenario_type_storage}_cum'].iloc[-1]
     
-    ax6.annotate(f'{final_value:.1f} kWh', 
+    ax7.annotate(f'{final_value:.1f} kWh', 
+                 xy=(monthly_cum.index[-1], final_value),
+                 xytext=(x_offsets[j], annotation_offset_storage), 
+                 textcoords='offset points',
+                 bbox=dict(boxstyle='round,pad=0.3', 
+                          facecolor=annotation_color_storage, 
+                          alpha=0.7 - j*0.1),
+                 fontsize=7, fontweight='bold')
+
+# Annotations für 8.192 kWh Speicher (ax8)
+for j, (scenario_name, battery_data) in enumerate(monthly_cum_data.items()):
+    monthly_cum = battery_data['8.192 kWh']
+    final_value = monthly_cum[f'{scenario_type_storage}_cum'].iloc[-1]
+    
+    ax8.annotate(f'{final_value:.1f} kWh', 
                  xy=(monthly_cum.index[-1], final_value),
                  xytext=(x_offsets[j], annotation_offset_storage), 
                  textcoords='offset points',
@@ -284,118 +329,161 @@ for scenario_name, battery_results in results.items():
     investment_4kwh = prices[scenario_name]['storage_4kwh']
     amortization_4kwh = investment_4kwh / annual_savings_4kwh if annual_savings_4kwh > 0 else float('inf')
     
+    # Mit 8.192 kWh Speicher
+    annual_yield_8kwh = battery_results['8.192 kWh']['buffered'].sum()
+    annual_savings_8kwh = annual_yield_8kwh * electricity_price
+    investment_8kwh = prices[scenario_name]['storage_8kwh']
+    amortization_8kwh = investment_8kwh / annual_savings_8kwh if annual_savings_8kwh > 0 else float('inf')
+    
     amortization_data[scenario_name] = {
         'no_storage': {'years': amortization_no_storage, 'investment': investment_no_storage, 'savings': annual_savings_no_storage},
         'storage_2kwh': {'years': amortization_2kwh, 'investment': investment_2kwh, 'savings': annual_savings_2kwh},
-        'storage_4kwh': {'years': amortization_4kwh, 'investment': investment_4kwh, 'savings': annual_savings_4kwh}
+        'storage_4kwh': {'years': amortization_4kwh, 'investment': investment_4kwh, 'savings': annual_savings_4kwh},
+        'storage_8kwh': {'years': amortization_8kwh, 'investment': investment_8kwh, 'savings': annual_savings_8kwh}
     }
 
-# Subplot 7: Amortisation ohne Speicher
+# Subplot 9: Amortisation ohne Speicher
 scenario_names = list(amortization_data.keys())
 amortization_years_no_storage = [amortization_data[name]['no_storage']['years'] for name in scenario_names]
 investments_no_storage = [amortization_data[name]['no_storage']['investment'] for name in scenario_names]
 
-bars7 = ax7.bar(scenario_names, amortization_years_no_storage, color='orange', alpha=0.7)
-ax7.set_title("Amortisationszeit - Ohne Speicher")
-ax7.set_ylabel("Jahre")
-ax7.set_ylim(0, max(amortization_years_no_storage) * 1.1)
-ax7.grid(True, alpha=0.3)
-
-# Annotationen mit Investitionskosten
-for i, (bar, investment) in enumerate(zip(bars7, investments_no_storage)):
-    height = bar.get_height()
-    ax7.annotate(f'{height:.1f} Jahre\n({investment}€)', 
-                xy=(bar.get_x() + bar.get_width()/2, height),
-                xytext=(0, 3), textcoords='offset points',
-                ha='center', va='bottom', fontsize=8, fontweight='bold')
-
-# Subplot 8: Amortisation mit 2.048 kWh Speicher
-amortization_years_2kwh = [amortization_data[name]['storage_2kwh']['years'] for name in scenario_names]
-investments_2kwh = [amortization_data[name]['storage_2kwh']['investment'] for name in scenario_names]
-
-bars8 = ax8.bar(scenario_names, amortization_years_2kwh, color='lightgreen', alpha=0.7)
-ax8.set_title("Amortisationszeit - 2.048 kWh Speicher")
-ax8.set_ylabel("Jahre")
-ax8.set_ylim(0, max(amortization_years_2kwh) * 1.1)
-ax8.grid(True, alpha=0.3)
-
-# Annotationen mit Investitionskosten
-for i, (bar, investment) in enumerate(zip(bars8, investments_2kwh)):
-    height = bar.get_height()
-    ax8.annotate(f'{height:.1f} Jahre\n({investment}€)', 
-                xy=(bar.get_x() + bar.get_width()/2, height),
-                xytext=(0, 3), textcoords='offset points',
-                ha='center', va='bottom', fontsize=8, fontweight='bold')
-
-# Subplot 9: Amortisation mit 4.096 kWh Speicher
-amortization_years_4kwh = [amortization_data[name]['storage_4kwh']['years'] for name in scenario_names]
-investments_4kwh = [amortization_data[name]['storage_4kwh']['investment'] for name in scenario_names]
-
-bars9 = ax9.bar(scenario_names, amortization_years_4kwh, color='darkgreen', alpha=0.7)
-ax9.set_title("Amortisationszeit - 4.096 kWh Speicher")
+bars9 = ax9.bar(scenario_names, amortization_years_no_storage, color='orange', alpha=0.7)
+ax9.set_title("Amortisationszeit - Ohne Speicher")
 ax9.set_ylabel("Jahre")
-ax9.set_ylim(0, max(amortization_years_4kwh) * 1.1)
+ax9.set_ylim(0, max(amortization_years_no_storage) * 1.1)
 ax9.grid(True, alpha=0.3)
 
 # Annotationen mit Investitionskosten
-for i, (bar, investment) in enumerate(zip(bars9, investments_4kwh)):
+for i, (bar, investment) in enumerate(zip(bars9, investments_no_storage)):
     height = bar.get_height()
     ax9.annotate(f'{height:.1f} Jahre\n({investment}€)', 
                 xy=(bar.get_x() + bar.get_width()/2, height),
                 xytext=(0, 3), textcoords='offset points',
                 ha='center', va='bottom', fontsize=8, fontweight='bold')
 
-# ===== JÄHRLICHE ERSPARNISSE =====
-# Subplot 10: Jährliche Ersparnisse ohne Speicher
-annual_savings_no_storage = [amortization_data[name]['no_storage']['savings'] for name in scenario_names]
+# Subplot 10: Amortisation mit 2.048 kWh Speicher
+amortization_years_2kwh = [amortization_data[name]['storage_2kwh']['years'] for name in scenario_names]
+investments_2kwh = [amortization_data[name]['storage_2kwh']['investment'] for name in scenario_names]
 
-bars10 = ax10.bar(scenario_names, annual_savings_no_storage, color='orange', alpha=0.7)
-ax10.set_title("Jährliche Ersparnisse - Ohne Speicher")
-ax10.set_ylabel("Ersparnisse (€/Jahr)")
-ax10.set_ylim(0, max(annual_savings_no_storage) * 1.1)
+bars10 = ax10.bar(scenario_names, amortization_years_2kwh, color='lightgreen', alpha=0.7)
+ax10.set_title("Amortisationszeit - 2.048 kWh Speicher")
+ax10.set_ylabel("Jahre")
+ax10.set_ylim(0, max(amortization_years_2kwh) * 1.1)
 ax10.grid(True, alpha=0.3)
 
-# Annotationen mit jährlichen Ersparnissen
-for i, bar in enumerate(bars10):
+# Annotationen mit Investitionskosten
+for i, (bar, investment) in enumerate(zip(bars10, investments_2kwh)):
     height = bar.get_height()
-    yield_kwh = annual_savings_no_storage[i] / electricity_price
-    ax10.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
-                 xy=(bar.get_x() + bar.get_width()/2, height),
-                 xytext=(0, 3), textcoords='offset points',
-                 ha='center', va='bottom', fontsize=8, fontweight='bold')
+    ax10.annotate(f'{height:.1f} Jahre\n({investment}€)', 
+                xy=(bar.get_x() + bar.get_width()/2, height),
+                xytext=(0, 3), textcoords='offset points',
+                ha='center', va='bottom', fontsize=8, fontweight='bold')
 
-# Subplot 11: Jährliche Ersparnisse mit 2.048 kWh Speicher
-annual_savings_2kwh = [amortization_data[name]['storage_2kwh']['savings'] for name in scenario_names]
+# Subplot 11: Amortisation mit 4.096 kWh Speicher
+amortization_years_4kwh = [amortization_data[name]['storage_4kwh']['years'] for name in scenario_names]
+investments_4kwh = [amortization_data[name]['storage_4kwh']['investment'] for name in scenario_names]
 
-bars11 = ax11.bar(scenario_names, annual_savings_2kwh, color='lightgreen', alpha=0.7)
-ax11.set_title("Jährliche Ersparnisse - 2.048 kWh Speicher")
-ax11.set_ylabel("Ersparnisse (€/Jahr)")
-ax11.set_ylim(0, max(annual_savings_2kwh) * 1.1)
+bars11 = ax11.bar(scenario_names, amortization_years_4kwh, color='darkgreen', alpha=0.7)
+ax11.set_title("Amortisationszeit - 4.096 kWh Speicher")
+ax11.set_ylabel("Jahre")
+ax11.set_ylim(0, max(amortization_years_4kwh) * 1.1)
 ax11.grid(True, alpha=0.3)
 
-# Annotationen mit jährlichen Ersparnissen
-for i, bar in enumerate(bars11):
+# Annotationen mit Investitionskosten
+for i, (bar, investment) in enumerate(zip(bars11, investments_4kwh)):
     height = bar.get_height()
-    yield_kwh = annual_savings_2kwh[i] / electricity_price
-    ax11.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
+    ax11.annotate(f'{height:.1f} Jahre\n({investment}€)', 
+                xy=(bar.get_x() + bar.get_width()/2, height),
+                xytext=(0, 3), textcoords='offset points',
+                ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+# Subplot 12: Amortisation mit 8.192 kWh Speicher
+amortization_years_8kwh = [amortization_data[name]['storage_8kwh']['years'] for name in scenario_names]
+investments_8kwh = [amortization_data[name]['storage_8kwh']['investment'] for name in scenario_names]
+
+bars12 = ax12.bar(scenario_names, amortization_years_8kwh, color='darkblue', alpha=0.7)
+ax12.set_title("Amortisationszeit - 8.192 kWh Speicher")
+ax12.set_ylabel("Jahre")
+ax12.set_ylim(0, max(amortization_years_8kwh) * 1.1)
+ax12.grid(True, alpha=0.3)
+
+# Annotationen mit Investitionskosten
+for i, (bar, investment) in enumerate(zip(bars12, investments_8kwh)):
+    height = bar.get_height()
+    ax12.annotate(f'{height:.1f} Jahre\n({investment}€)', 
+                xy=(bar.get_x() + bar.get_width()/2, height),
+                xytext=(0, 3), textcoords='offset points',
+                ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+# ===== JÄHRLICHE ERSPARNISSE =====
+# Subplot 13: Jährliche Ersparnisse ohne Speicher
+annual_savings_no_storage = [amortization_data[name]['no_storage']['savings'] for name in scenario_names]
+
+bars13 = ax13.bar(scenario_names, annual_savings_no_storage, color='orange', alpha=0.7)
+ax13.set_title("Jährliche Ersparnisse - Ohne Speicher")
+ax13.set_ylabel("Ersparnisse (€/Jahr)")
+ax13.set_ylim(0, max(annual_savings_no_storage) * 1.1)
+ax13.grid(True, alpha=0.3)
+
+# Annotationen mit jährlichen Ersparnissen
+for i, bar in enumerate(bars13):
+    height = bar.get_height()
+    yield_kwh = annual_savings_no_storage[i] / electricity_price
+    ax13.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
                  xy=(bar.get_x() + bar.get_width()/2, height),
                  xytext=(0, 3), textcoords='offset points',
                  ha='center', va='bottom', fontsize=8, fontweight='bold')
 
-# Subplot 12: Jährliche Ersparnisse mit 4.096 kWh Speicher
-annual_savings_4kwh = [amortization_data[name]['storage_4kwh']['savings'] for name in scenario_names]
+# Subplot 14: Jährliche Ersparnisse mit 2.048 kWh Speicher
+annual_savings_2kwh = [amortization_data[name]['storage_2kwh']['savings'] for name in scenario_names]
 
-bars12 = ax12.bar(scenario_names, annual_savings_4kwh, color='darkgreen', alpha=0.7)
-ax12.set_title("Jährliche Ersparnisse - 4.096 kWh Speicher")
-ax12.set_ylabel("Ersparnisse (€/Jahr)")
-ax12.set_ylim(0, max(annual_savings_4kwh) * 1.1)
-ax12.grid(True, alpha=0.3)
+bars14 = ax14.bar(scenario_names, annual_savings_2kwh, color='lightgreen', alpha=0.7)
+ax14.set_title("Jährliche Ersparnisse - 2.048 kWh Speicher")
+ax14.set_ylabel("Ersparnisse (€/Jahr)")
+ax14.set_ylim(0, max(annual_savings_2kwh) * 1.1)
+ax14.grid(True, alpha=0.3)
 
 # Annotationen mit jährlichen Ersparnissen
-for i, bar in enumerate(bars12):
+for i, bar in enumerate(bars14):
+    height = bar.get_height()
+    yield_kwh = annual_savings_2kwh[i] / electricity_price
+    ax14.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
+                 xy=(bar.get_x() + bar.get_width()/2, height),
+                 xytext=(0, 3), textcoords='offset points',
+                 ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+# Subplot 15: Jährliche Ersparnisse mit 4.096 kWh Speicher
+annual_savings_4kwh = [amortization_data[name]['storage_4kwh']['savings'] for name in scenario_names]
+
+bars15 = ax15.bar(scenario_names, annual_savings_4kwh, color='darkgreen', alpha=0.7)
+ax15.set_title("Jährliche Ersparnisse - 4.096 kWh Speicher")
+ax15.set_ylabel("Ersparnisse (€/Jahr)")
+ax15.set_ylim(0, max(annual_savings_4kwh) * 1.1)
+ax15.grid(True, alpha=0.3)
+
+# Annotationen mit jährlichen Ersparnissen
+for i, bar in enumerate(bars15):
     height = bar.get_height()
     yield_kwh = annual_savings_4kwh[i] / electricity_price
-    ax12.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
+    ax15.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
+                 xy=(bar.get_x() + bar.get_width()/2, height),
+                 xytext=(0, 3), textcoords='offset points',
+                 ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+# Subplot 16: Jährliche Ersparnisse mit 8.192 kWh Speicher
+annual_savings_8kwh = [amortization_data[name]['storage_8kwh']['savings'] for name in scenario_names]
+
+bars16 = ax16.bar(scenario_names, annual_savings_8kwh, color='darkblue', alpha=0.7)
+ax16.set_title("Jährliche Ersparnisse - 8.192 kWh Speicher")
+ax16.set_ylabel("Ersparnisse (€/Jahr)")
+ax16.set_ylim(0, max(annual_savings_8kwh) * 1.1)
+ax16.grid(True, alpha=0.3)
+
+# Annotationen mit jährlichen Ersparnissen
+for i, bar in enumerate(bars16):
+    height = bar.get_height()
+    yield_kwh = annual_savings_8kwh[i] / electricity_price
+    ax16.annotate(f'{height:.0f}€/Jahr\n({yield_kwh:.0f} kWh)', 
                  xy=(bar.get_x() + bar.get_width()/2, height),
                  xytext=(0, 3), textcoords='offset points',
                  ha='center', va='bottom', fontsize=8, fontweight='bold')
@@ -431,6 +519,14 @@ for scenario_name, battery_results in results.items():
             additional_yield = total_buffered - total_buffered_small
             print(f"Zusätzlicher Ertrag vs 2.048 kWh: {round(additional_yield, 2)} kWh")
             print(f"Effizienz-Steigerung:           {round(additional_yield/total_buffered_small*100, 1)}%")
+        
+        if battery_name == '8.192 kWh':
+            # Vergleich mit 4.096 kWh Batterie
+            df_medium = battery_results['4.096 kWh']
+            total_buffered_medium = df_medium['buffered'].sum()
+            additional_yield = total_buffered - total_buffered_medium
+            print(f"Zusätzlicher Ertrag vs 4.096 kWh: {round(additional_yield, 2)} kWh")
+            print(f"Effizienz-Steigerung:           {round(additional_yield/total_buffered_medium*100, 1)}%")
 
 # Amortisationsanalyse in der Konsole
 print(f"\n{'='*60}")
@@ -462,16 +558,25 @@ for scenario_name in amortization_data.keys():
     print(f"  Jährliche Ersparnis: {data_4kwh['savings']:.2f}€")
     print(f"  Amortisationszeit: {data_4kwh['years']:.1f} Jahre")
     
+    # Mit 8.192 kWh Speicher
+    data_8kwh = amortization_data[scenario_name]['storage_8kwh']
+    print(f"Mit 8.192 kWh Speicher:")
+    print(f"  Investition: {data_8kwh['investment']}€")
+    print(f"  Jährliche Ersparnis: {data_8kwh['savings']:.2f}€")
+    print(f"  Amortisationszeit: {data_8kwh['years']:.1f} Jahre")
+    
     # Vergleichsanalyse
     best_option = min([
         ('Ohne Speicher', data_no_storage['years']),
         ('2.048 kWh Speicher', data_2kwh['years']),
-        ('4.096 kWh Speicher', data_4kwh['years'])
+        ('4.096 kWh Speicher', data_4kwh['years']),
+        ('8.192 kWh Speicher', data_8kwh['years'])
     ], key=lambda x: x[1])
     
     print(f"  → Beste Option: {best_option[0]} ({best_option[1]:.1f} Jahre)")
 
 print(f"\n{'='*60}")
-print("EXTRAPOLIERTE PREISE für 4.0 kWp:")
-print("Ohne Speicher: 1100€ | Mit 2 kWh: 1970€ | Mit 4 kWh: 2570€")
+print("EXTRAPOLIERTE PREISE für größere Systeme:")
+print("4.0 kWp: Ohne Speicher: 1100€ | Mit 2 kWh: 1970€ | Mit 4 kWh: 2570€ | Mit 8 kWh: 3770€")
+print("8.0 kWp: Ohne Speicher: 1900€ | Mit 2 kWh: 3130€ | Mit 4 kWh: 3730€ | Mit 8 kWh: 4500€")
 print(f"{'='*60}")
