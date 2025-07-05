@@ -1,0 +1,6 @@
+pyproject.toml
+balkonkraftwerk.egg-info/PKG-INFO
+balkonkraftwerk.egg-info/SOURCES.txt
+balkonkraftwerk.egg-info/dependency_links.txt
+balkonkraftwerk.egg-info/requires.txt
+balkonkraftwerk.egg-info/top_level.txt

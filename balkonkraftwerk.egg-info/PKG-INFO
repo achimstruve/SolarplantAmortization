@@ -1,0 +1,24 @@
+Metadata-Version: 2.4
+Name: balkonkraftwerk
+Version: 0.1.0
+Summary: Solar panel energy yield simulation for Balkonkraftwerk with battery storage
+Author-email: Your Name <your.email@example.com>
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: pvlib>=0.10.0
+Requires-Dist: pandas>=1.5.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: requests>=2.25.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: flake8>=4.0.0; extra == "dev"
